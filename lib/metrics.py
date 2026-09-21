@@ -30,5 +30,24 @@ def computePSI(train_data:pd.Series,production_data:pd.Series, bins:int = 10):
   
   return psi.round(3)
 
+def evaluate_model(model, x, y, threshold=0.5): 
+  
+  predict_prob = model.predict_proba(x)[:,1]
+  
+  y_pred = (predict_prob >= threshold).astype(int)
+  
+  metrics = {
+    'accuracy': accuracy_score(y,y_pred),
+    'precision': precision_score(y, y_pred, zero_division=0),
+    'recall': recall_score(y,y_pred, zero_division=0), 
+    'f1': f1_score(y,y_pred, zero_division=0), 
+    'roc_auc': roc_auc_score(y, predict_prob),
+    'pr_auc': average_precision_score(y,predict_prob)
+  }
+  
+  cmatrix = confusion_matrix(y, y_pred)
+  
+  return y_pred, predict_prob, metrics, cmatrix
+
 
   

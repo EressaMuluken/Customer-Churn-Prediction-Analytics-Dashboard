@@ -12,7 +12,9 @@ models = {
     "Decision Tree": DecisionTreeClassifier(
         max_depth=5,
         min_samples_leaf=20,
-        random_state=42
+        random_state=42,
+        class_weight="balanced",
+
     ),
 
     "Random Forest": RandomForestClassifier(
