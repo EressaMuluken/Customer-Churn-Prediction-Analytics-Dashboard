@@ -1,5 +1,7 @@
 import pandas as pd 
 import numpy as np 
+from sklearn.metrics import accuracy_score,precision_score, recall_score,f1_score, roc_auc_score, average_precision_score, confusion_matrix
+
 def computePSI(train_data:pd.Series,production_data:pd.Series, bins:int = 10): 
   if pd.api.types.is_numeric_dtype(train_data): 
     bins = np.quantile(

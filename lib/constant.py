@@ -49,7 +49,3 @@ categorical_features = [
 ]
 
 
-
-features = numeric_features + categorical_features
-
-
