@@ -37,12 +37,12 @@ def evaluate_model(model, x, y, threshold=0.5):
   y_pred = (predict_prob >= threshold).astype(int)
   
   metrics = {
-    'accuracy': accuracy_score(y,y_pred),
-    'precision': precision_score(y, y_pred, zero_division=0),
-    'recall': recall_score(y,y_pred, zero_division=0), 
-    'f1': f1_score(y,y_pred, zero_division=0), 
-    'roc_auc': roc_auc_score(y, predict_prob),
-    'pr_auc': average_precision_score(y,predict_prob)
+    'accuracy': float(accuracy_score(y,y_pred)),
+    'precision': float(precision_score(y, y_pred, zero_division=0)),
+    'recall': float(recall_score(y,y_pred, zero_division=0)), 
+    'f1': float(f1_score(y,y_pred, zero_division=0)), 
+    'roc_auc': float(roc_auc_score(y, predict_prob)),
+    'pr_auc': float(average_precision_score(y,predict_prob))
   }
   
   cmatrix = confusion_matrix(y, y_pred)

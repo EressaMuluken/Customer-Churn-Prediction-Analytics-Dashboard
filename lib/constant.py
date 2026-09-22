@@ -52,11 +52,10 @@ param_grids = {
 
     "Logistic Regression": {
         "model__C": [0.01, 0.1, 1, 10, 100],
-        "model__penalty": ["l2"],
         "model__solver": ["lbfgs", "liblinear"],
         "model__class_weight": [None, "balanced"]
     },
-
+    
     "Decision Tree": {
         "model__criterion": ["gini", "entropy"],
         "model__max_depth": [3, 4, 5, 6, 7, 10, None],
