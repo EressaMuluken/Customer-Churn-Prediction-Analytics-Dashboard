@@ -1,0 +1,47 @@
+,features
+0,numeric__Tenure Months
+1,numeric__Monthly Charges
+2,numeric__Total Charges
+3,categorical__Gender_Female
+4,categorical__Gender_Male
+5,categorical__Senior Citizen_No
+6,categorical__Senior Citizen_Yes
+7,categorical__Partner_No
+8,categorical__Partner_Yes
+9,categorical__Dependents_No
+10,categorical__Dependents_Yes
+11,categorical__Phone Service_No
+12,categorical__Phone Service_Yes
+13,categorical__Multiple Lines_No
+14,categorical__Multiple Lines_No phone service
+15,categorical__Multiple Lines_Yes
+16,categorical__Internet Service_DSL
+17,categorical__Internet Service_Fiber optic
+18,categorical__Internet Service_No
+19,categorical__Online Security_No
+20,categorical__Online Security_No internet service
+21,categorical__Online Security_Yes
+22,categorical__Online Backup_No
+23,categorical__Online Backup_No internet service
+24,categorical__Online Backup_Yes
+25,categorical__Device Protection_No
+26,categorical__Device Protection_No internet service
+27,categorical__Device Protection_Yes
+28,categorical__Tech Support_No
+29,categorical__Tech Support_No internet service
+30,categorical__Tech Support_Yes
+31,categorical__Streaming TV_No
+32,categorical__Streaming TV_No internet service
+33,categorical__Streaming TV_Yes
+34,categorical__Streaming Movies_No
+35,categorical__Streaming Movies_No internet service
+36,categorical__Streaming Movies_Yes
+37,categorical__Contract_Month-to-month
+38,categorical__Contract_One year
+39,categorical__Contract_Two year
+40,categorical__Paperless Billing_No
+41,categorical__Paperless Billing_Yes
+42,categorical__Payment Method_Bank transfer (automatic)
+43,categorical__Payment Method_Credit card (automatic)
+44,categorical__Payment Method_Electronic check
+45,categorical__Payment Method_Mailed check

@@ -1,0 +1,60 @@
+{
+    "model_name": "XGBoost",
+    "target": "Churn Value",
+    "features": [
+        "Gender",
+        "Senior Citizen",
+        "Partner",
+        "Dependents",
+        "Tenure Months",
+        "Phone Service",
+        "Multiple Lines",
+        "Internet Service",
+        "Online Security",
+        "Online Backup",
+        "Device Protection",
+        "Tech Support",
+        "Streaming TV",
+        "Streaming Movies",
+        "Contract",
+        "Paperless Billing",
+        "Payment Method",
+        "Monthly Charges",
+        "Total Charges"
+    ],
+    "numeric_features": [
+        "Tenure Months",
+        "Monthly Charges",
+        "Total Charges"
+    ],
+    "categorical_features": [
+        "Gender",
+        "Senior Citizen",
+        "Partner",
+        "Dependents",
+        "Phone Service",
+        "Multiple Lines",
+        "Internet Service",
+        "Online Security",
+        "Online Backup",
+        "Device Protection",
+        "Tech Support",
+        "Streaming TV",
+        "Streaming Movies",
+        "Contract",
+        "Paperless Billing",
+        "Payment Method"
+    ],
+    "training_date": "2026-09-22 18:14:23.783848",
+    "random_state": 42,
+    "threshold": 0.5,
+    "best_params": {
+        "model__colsample_bytree": 0.8,
+        "model__learning_rate": 0.05,
+        "model__max_depth": 2,
+        "model__min_child_weight": 5,
+        "model__n_estimators": 200,
+        "model__subsample": 0.8
+    },
+    "f1_bestscore": 0.6090686709472208
+}
