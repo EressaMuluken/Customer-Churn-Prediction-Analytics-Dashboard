@@ -125,15 +125,34 @@ with col_reasons:
               </div>
           </div>
           """, unsafe_allow_html=True)
+with st.container(border=True):
+  cols = ['Online Security', 'Online Backup', 'Device Protection', 'Tech Support', 'Streaming TV', 'Streaming Movies']
+  churn_rates = pd.concat(
+    [
+        (df.groupby(service)["Churn Value"].mean() * 100).rename(service)
+        for service in cols
+    ],
+    axis=1
+    )
+  churn_rates.index.name = 'Option'
+  st.markdown(f"""
+            <div>
+            <span style="margin-bottom:0px;">Churn rate by service
+            </span>
+            <span style="margin-left:8px;color:gray; font-size:14px;"> Security / Backup / Device Protection / Tech Support / Streaming</span>
+            <hr style="margin-top:0px;"/>
+            </div>
+            """, unsafe_allow_html=True)
+  st.dataframe(churn_rates)
 with st.container(border=True): 
-   sample_cols = ['CustomerID', 'State', 'Contract', 'Tenure Months', 'Monthly Charges', 'CLTV', 'Churn Score', 'Churn Reason']
-   df_sample = df[df['Churn Value'] == 1][sample_cols]
-   st.markdown(f"""
-                <div>
-                <span style="margin-bottom:0px;">Customer Detail</span>
-                <span style="margin-left:8px;color:gray; font-size:14px;">{len(df_sample)} of {len(df)} - Churn Value = 1</span>
-                <hr style="margin-top:0px;"/>
-                </div>
-                """, unsafe_allow_html=True)
+  sample_cols = ['CustomerID', 'State', 'Contract', 'Tenure Months', 'Monthly Charges', 'CLTV', 'Churn Score', 'Churn Reason']
+  df_sample = df[df['Churn Value'] == 1][sample_cols]
+  st.markdown(f"""
+              <div>
+              <span style="margin-bottom:0px;">Customer Detail</span>
+              <span style="margin-left:8px;color:gray; font-size:14px;">{len(df_sample)} of {len(df)} - Churn Value = 1</span>
+              <hr style="margin-top:0px;"/>
+              </div>
+              """, unsafe_allow_html=True)
   
-   st.dataframe(df_sample)
+  st.dataframe(df_sample)
