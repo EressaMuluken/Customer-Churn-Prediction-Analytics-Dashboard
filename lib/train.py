@@ -59,10 +59,6 @@ for name, pipeline in pipelines.items():
  print(f'Tuning {name} model')
  result = tune_model(model=pipeline, x=X_train, y=y_train, cv=5, param=param_grids[name], scoring='f1',n_jobs=-1)
  best_model[name] = result.best_estimator_
- best_pipepline= Pipeline([
-   ('preprocessor', preprocessor), 
-   ('model', result.best_estimator_)
-  ])
  metadata = {
    'model_name': name, 
    'target': target, 
@@ -77,10 +73,11 @@ for name, pipeline in pipelines.items():
  }
  with open(f'../metadata/{name}_metadata.json', 'w') as f: 
    json.dump(metadata, f, indent=4)
- joblib.dump(best_pipepline, f"../models/{name}_pipeline.joblib")
+ joblib.dump(best_model, f"../models/{name}_pipeline.joblib")
  
 test_result = []
 feature_importance = {}
+
 for name, model in best_model.items(): 
   print(f'Evaluating tuned {name} model on test data ...')
   y_pred, y_prob, metrics, cmatrix = evaluate_model(model, X_test, y_test, threshold=0.5)
