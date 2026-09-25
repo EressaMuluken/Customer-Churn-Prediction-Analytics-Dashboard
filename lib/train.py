@@ -85,7 +85,8 @@ for name, model in best_model.items():
   false_postive_rate, true_positive_rate, roc_threshold = roc_curve(y_test, y_prob)
   eval_metrics = {
     'model': name, 
-    **metrics
+    'cm': cmatrix.tolist(), 
+    **metrics,
   }
   df_prc = pd.DataFrame({
     'threshold': model_threshold,
@@ -99,7 +100,7 @@ for name, model in best_model.items():
     'threshold': roc_threshold
   })
   if hasattr(model, 'feature_importances_'): 
-    feature_importance[name] = model.feature_importances_
+    feature_importance[name] = model.named_steps['model'].feature_importances_
   elif hasattr(model, 'coef_'): 
     feature_importance[name] = np.abs(model.coef_[0])
     
@@ -110,7 +111,7 @@ for name, model in best_model.items():
   with open(f'../metrics/{name}_evaluation_metrics.json', 'w') as f: 
     json.dump(eval_metrics, f, indent=4)
     
-feature_importance['features'] = preprocessor.get_feature_names_out()
+feature_importance['features'] = model.named_steps['processor'].get_feature_names_out()
 df_feature_importance = pd.DataFrame(feature_importance).to_csv('../evaluation/feature_importance.csv')
 
 df_test = pd.DataFrame(test_result)
