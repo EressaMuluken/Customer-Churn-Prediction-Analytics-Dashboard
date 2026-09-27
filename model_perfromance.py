@@ -3,22 +3,77 @@ import json
 from itertools import islice
 import pandas as pd 
 import matplotlib.pyplot as plt 
-def plot_roc(fpr, tpr, thresholds, roc_auc):
+import numpy as np 
+def plot_f1_threshold(thresholds, f1,f1_score): 
+    n_points = 10
+    indices = np.linspace(0,len(thresholds) - 1,n_points,dtype=int)
+    points_thresholds = thresholds[indices]
+    points_f1 = f1[indices]
+    opt_index = f1.idxmax()
+    opt_f1 = f1.loc[opt_index]
     fig, ax = plt.subplots(figsize=(8,4.6))
-    ax.plot(fpr,tpr,linewidth=2,label=f"ROC curve (AUC = {roc_auc:.2f})")
-    ax.plot(
-    [0, 1],
-    [0, 1],
-    linestyle="--",
-    linewidth=1.2,
-    alpha=0.6,
-    label="Random classifier"
-)
-    for x,y, threshold in zip(fpr[::15], tpr[::15], thresholds[::15]):
-        plt.annotate(f'{threshold:.2f}',
-                     (x,y),
-                     xytext=(5,5), 
-                     textcoords='offset points',color='#6B7280')
+    ax.plot(thresholds,f1,linewidth=2,label=f"F1 (score = {f1_score:.2f})", color='#B23A48')
+    ax.axvline(thresholds.loc[opt_index],linestyle="--",linewidth=1.2,alpha=0.6,label=f"Threshold (optimal = {thresholds.loc[opt_index]:.3f})")
+    ax.scatter(thresholds.loc[opt_index],opt_f1,zorder=5)
+    for x,y in zip(points_thresholds,points_f1):
+        plt.annotate(f'{y:.2f}',(x,y),xytext=(5,5),textcoords='offset points',color='#6B7280')
+    ax.set_xlabel('Threshold',fontsize=10,color="#6B7280")
+    ax.set_ylabel('F1 score',fontsize=10,color="#6B7280")
+    ax.set_title('F1 score', fontsize=10, fontweight='bold', color='#6B7280', pad=10)
+    ax.tick_params(axis='both', labelsize=9, colors='#6B7280')
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_color("#BBBBBB")
+    ax.spines["bottom"].set_color("#BBBBBB")
+    ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
+    ax.patch.set_alpha(0)
+    legend = ax.legend(fontsize=8,frameon=False,loc="upper left")
+    plt.setp(legend.get_texts(), color="#6B7280")
+    fig.patch.set_alpha(0)
+    plt.tight_layout()
+    return fig  
+    
+def plot_pr_auc(recall, percision, thresholds, pr_auc, churn_prop): 
+    n_points = 10
+    indices = np.linspace(0,len(thresholds) - 1,n_points,dtype=int)
+    points_precision = percision[indices]
+    points_recall = recall[indices]
+    points_thresholds = thresholds[indices]
+    
+    fig, ax = plt.subplots(figsize=(8,4.6))
+    ax.plot(recall,percision,linewidth=2,label=f"PR curve (AUC = {pr_auc:.2f})", color='#B23A48')
+    ax.axhline(churn_prop,linestyle="--",linewidth=1.2,alpha=0.6,label=f"Random classifier ({churn_prop:.2f})")
+    
+    for x,y, threshold in zip(points_recall,points_precision, points_thresholds):
+        plt.annotate(f'{threshold:.2f}',(x,y),xytext=(5,5),textcoords='offset points',color='#6B7280')
+    ax.set_xlabel('Recall',fontsize=10,color="#6B7280")
+    ax.set_ylabel('Precision',fontsize=10,color="#6B7280")
+    ax.set_title('PR Curve', fontsize=10, fontweight='bold', color='#6B7280', pad=10)
+    ax.tick_params(axis='both', labelsize=9, colors='#6B7280')
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_color("#BBBBBB")
+    ax.spines["bottom"].set_color("#BBBBBB")
+    ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
+    ax.patch.set_alpha(0)
+    legend = ax.legend(fontsize=8,frameon=False,loc="upper right")
+    plt.setp(legend.get_texts(), color="#6B7280")
+    fig.patch.set_alpha(0)
+    plt.tight_layout()
+    return fig  
+    
+def plot_roc(fpr, tpr, thresholds, roc_auc):
+    n_points = 10
+    indices = np.linspace(0,len(thresholds) - 1,n_points,dtype=int)
+    points_fpr = fpr[indices]
+    points_tpr = tpr[indices]
+    points_thresholds = thresholds[indices]
+    
+    fig, ax = plt.subplots(figsize=(8,4.6))
+    ax.plot(fpr,tpr,linewidth=2,label=f"ROC curve (AUC = {roc_auc:.2f})", color='#B23A48')
+    ax.plot([0, 1],[0, 1],linestyle="--",linewidth=1.2,alpha=0.6,label="Random classifier")
+    for x,y, threshold in zip(points_fpr, points_tpr, points_thresholds):
+        plt.annotate(f'{threshold:.2f}',(x,y),xytext=(5,5),textcoords='offset points',color='#6B7280')
     ax.set_xlabel('False positive rate',fontsize=10,color="#6B7280")
     ax.set_ylabel('True positive rate',fontsize=10,color="#6B7280")
     ax.set_title('ROC Curve', fontsize=10, fontweight='bold', color='#6B7280', pad=10)
@@ -29,7 +84,8 @@ def plot_roc(fpr, tpr, thresholds, roc_auc):
     ax.spines["bottom"].set_color("#BBBBBB")
     ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
     ax.patch.set_alpha(0)
-    ax.legend(fontsize=8,frameon=False,loc="lower right")
+    legend = ax.legend(fontsize=8,frameon=False,loc="lower right")
+    plt.setp(legend.get_texts(), color="#6B7280")
     fig.patch.set_alpha(0)
     plt.tight_layout()
     return fig 
@@ -179,3 +235,71 @@ with mid_col1:
     with st.container(border=True):
         fig = plot_roc(roc['fp rate'], roc['tp rate'], roc['threshold'], model_metrics['roc_auc'])
         st.pyplot(fig)
+        
+        
+pr_auc = pd.read_csv(f'./evaluation/{model}_precision_recall_curv.csv')
+churn_prop = st.session_state['data']['Churn Value'].mean()
+pr_col, thr_col = st.columns(2)
+with pr_col: 
+    with st.container(border=True):
+        fig = plot_pr_auc(pr_auc['recall'], pr_auc['precision'], pr_auc['threshold'], model_metrics['pr_auc'], churn_prop)
+        st.pyplot(fig)
+with thr_col: 
+    with st.container(border=True): 
+        fig = plot_f1_threshold(pr_auc['threshold'], pr_auc['f1'],model_metrics['f1'])
+        st.pyplot(fig)
+compare_array = []
+for item in models: 
+    with open(f'./metrics/{item}_evaluation_metrics.json', 'r') as f: 
+        metrics = json.load(f)
+        result = {k:v for k, v in metrics.items() if k not in ['cm']}
+        compare_array.append(result)
+compare_model_df = pd.DataFrame(compare_array)
+compare_model_df.columns = compare_model_df.columns.str.upper()
+with st.container(border=True): 
+    st.markdown(f"""
+              <div>
+              <span style="margin-bottom:0px;">Model Comparsion</span>
+              <span style="margin-left:8px;color:gray; font-size:14px;">/ Optimised based on F1-score</span>
+              <hr style="margin-top:0px;"/>
+              </div>
+              """, unsafe_allow_html=True)
+    st.dataframe(compare_model_df, hide_index=True)
+
+with open(f'./metadata/{model}_metadata.json', 'r') as f: 
+    model_metadata = json.load(f)
+with st.expander('Model Configuration'):
+    st.markdown(f"""
+              <div>
+              <p style="margin-bottom:0px;">Algorithm: 
+              <span style="margin-left:8px;color:gray; font-size:14px;"> {model_metadata['model_name']}</span></p>
+              <p style="margin-bottom:0px;">Training data: 
+              <span style="margin-left:8px;color:gray; font-size:14px;"> {model_metadata['training_date']}</span></p>
+              <p style="margin-bottom:0px;">Features: 
+              <span style="margin-left:8px;color:gray; font-size:14px;"> {len(model_metadata['features'])}</span></p>
+              <p style="margin-bottom:0px;">Numerical Features: 
+              <span style="margin-left:8px;color:gray; font-size:14px;"> {len(model_metadata['numeric_features'])}</span></p>
+              <p style="margin-bottom:0px;">Features: 
+              <span style="margin-left:8px;color:gray; font-size:14px;"> {len(model_metadata['categorical_features'])}</span></p>
+              <p style="margin-bottom:0px;">Target: 
+              <span style="margin-left:8px;color:gray; font-size:14px;"> {model_metadata['target']}</span></p>
+              <p style="margin-bottom:0px;">Classification threshold: 
+              <span style="margin-left:8px;color:gray; font-size:14px;"> {model_metadata['threshold']}</span></p>
+              <p style="margin-bottom:0px;">Random state: 
+              <span style="margin-left:8px;color:gray; font-size:14px;"> {model_metadata['random_state']}</span></p>
+              </div>
+              
+              """, unsafe_allow_html=True)
+with st.expander('Best hyperparameters'):
+    best_params = model_metadata['best_params']
+    print(best_params)
+    for key, value in best_params.items():
+        st.markdown(f"""
+                <div>
+                <p style="margin-bottom:0px;">{str(key).removeprefix('model__')}: 
+                <span style="margin-left:8px;color:gray; font-size:14px;"> {value}</span></p>
+                </div>
+                
+                """, unsafe_allow_html=True)
+   
+    

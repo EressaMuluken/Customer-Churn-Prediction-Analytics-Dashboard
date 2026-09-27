@@ -45,13 +45,13 @@
         "Paperless Billing",
         "Payment Method"
     ],
-    "training_date": "2026-09-24 23:05:01.549448",
+    "training_date": "2026-09-25 14:40:27.867735",
     "random_state": 42,
     "threshold": 0.5,
     "best_params": {
         "model__C": 100,
         "model__class_weight": "balanced",
-        "model__solver": "lbfgs"
+        "model__solver": "liblinear"
     },
-    "f1_bestscore": 0.6426078643497761
+    "f1_bestscore": 0.6367736646472588
 }

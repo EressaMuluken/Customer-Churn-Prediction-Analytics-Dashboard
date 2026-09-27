@@ -90,8 +90,8 @@ for name, model in best_model.items():
   }
   df_prc = pd.DataFrame({
     'threshold': model_threshold,
-    'precision': model_precision[-1], 
-    'recall': model_recall[-1]  
+    'precision': model_precision[:-1], 
+    'recall': model_recall[:-1]  
   })
   df_prc['f1'] = 2 * (df_prc['precision'] * df_prc['recall']) / (df_prc['precision'] + df_prc['recall'])
   df_roc = pd.DataFrame({
