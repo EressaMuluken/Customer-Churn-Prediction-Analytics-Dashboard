@@ -82,7 +82,7 @@ with col_map:
                 </div>
                 """, unsafe_allow_html=True)
     #st.divider()
-    st.map(df_churned,latitude='Latitude', longitude='Longitude', color='#FF0000')
+    st.map(df_churned,latitude='Latitude', longitude='Longitude', color='#FF0000', height=342, size=df_churned['Churn Score'].to_json())
 with col_reasons: 
   with st.container(border=True):
     churn_reasons = df["Churn Reason"].value_counts().head(11)
@@ -103,15 +103,14 @@ with col_reasons:
               <div style="
                   display: flex;
                   justify-content: space-between;
+                  align-items: center;
                   margin-bottom: 6px;
                   font-size: 14px;
               ">
-                  <span>{reason}</span>
-                  <span style="font-weight: 600;">{count}</span>
-              </div>
-              <div style="
-                  width: 100%;
-                  height: 8px;
+                  <span style="width:260px;">{reason}</span>
+                <div style="
+                  width: 60%;
+                  height: 100%;
                   background-color: #e5e7eb;
                   border-radius: 5px;
               ">
@@ -123,6 +122,9 @@ with col_reasons:
                   ">
                   </div>
               </div>
+                  <span style="font-weight: 600;">{count}</span>
+              </div>
+             
           </div>
           """, unsafe_allow_html=True)
 with st.container(border=True):
@@ -149,10 +151,10 @@ with st.container(border=True):
   df_sample = df[df['Churn Value'] == 1][sample_cols]
   st.markdown(f"""
               <div>
-              <span style="margin-bottom:0px;">Customer Detail</span>
+              <span style="margin-bottom:0px;">Churned Customer Detail</span>
               <span style="margin-left:8px;color:gray; font-size:14px;">{len(df_sample)} of {len(df)} - Churn Value = 1</span>
               <hr style="margin-top:0px;"/>
               </div>
               """, unsafe_allow_html=True)
   
-  st.dataframe(df_sample)
+  st.dataframe(df_sample, hide_index=True)

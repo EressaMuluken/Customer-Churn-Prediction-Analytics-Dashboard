@@ -11,23 +11,23 @@ def plot_f1_threshold(thresholds, f1,f1_score):
     points_f1 = f1[indices]
     opt_index = f1.idxmax()
     opt_f1 = f1.loc[opt_index]
-    fig, ax = plt.subplots(figsize=(8,4.6))
-    ax.plot(thresholds,f1,linewidth=2,label=f"F1 (score = {f1_score:.2f})", color='#B23A48')
-    ax.axvline(thresholds.loc[opt_index],linestyle="--",linewidth=1.2,alpha=0.6,label=f"Threshold (optimal = {thresholds.loc[opt_index]:.3f})")
+    fig, ax = plt.subplots(figsize=(3,2))
+    ax.plot(thresholds,f1,linewidth=1,label=f"F1 (score = {f1_score:.2f})", color='#B23A48')
+    ax.axvline(thresholds.loc[opt_index],linestyle="--",linewidth=1,alpha=0.6,label=f"Threshold (optimal = {thresholds.loc[opt_index]:.3f})")
     ax.scatter(thresholds.loc[opt_index],opt_f1,zorder=5)
     for x,y in zip(points_thresholds,points_f1):
-        plt.annotate(f'{y:.2f}',(x,y),xytext=(5,5),textcoords='offset points',color='#6B7280')
-    ax.set_xlabel('Threshold',fontsize=10,color="#6B7280")
-    ax.set_ylabel('F1 score',fontsize=10,color="#6B7280")
-    ax.set_title('F1 score', fontsize=10, fontweight='bold', color='#6B7280', pad=10)
-    ax.tick_params(axis='both', labelsize=9, colors='#6B7280')
+        plt.annotate(f'{y:.2f}',(x,y),xytext=(5,5),fontsize=4,textcoords='offset points',color='#6B7280')
+    #ax.set_xlabel('Threshold',fontsize=10,color="#6B7280")
+    #ax.set_ylabel('F1 score',fontsize=10,color="#6B7280")
+    ax.set_title('F1 score', fontsize=5, fontweight='bold', color='#6B7280', pad=10)
+    ax.tick_params(axis='both', labelsize=4, colors='#6B7280')
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_color("#BBBBBB")
-    ax.spines["bottom"].set_color("#BBBBBB")
+    ax.spines["left"].set_color("#6B7280")
+    ax.spines["bottom"].set_color("#6B7280")
     ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
     ax.patch.set_alpha(0)
-    legend = ax.legend(fontsize=8,frameon=False,loc="upper left")
+    legend = ax.legend(fontsize=5,frameon=False,loc="lower left")
     plt.setp(legend.get_texts(), color="#6B7280")
     fig.patch.set_alpha(0)
     plt.tight_layout()
@@ -40,23 +40,23 @@ def plot_pr_auc(recall, percision, thresholds, pr_auc, churn_prop):
     points_recall = recall[indices]
     points_thresholds = thresholds[indices]
     
-    fig, ax = plt.subplots(figsize=(8,4.6))
-    ax.plot(recall,percision,linewidth=2,label=f"PR curve (AUC = {pr_auc:.2f})", color='#B23A48')
-    ax.axhline(churn_prop,linestyle="--",linewidth=1.2,alpha=0.6,label=f"Random classifier ({churn_prop:.2f})")
+    fig, ax = plt.subplots(figsize=(3,2))
+    ax.plot(recall,percision,linewidth=1,label=f"PR curve (AUC = {pr_auc:.2f})", color='#B23A48')
+    ax.axhline(churn_prop,linestyle="--",linewidth=1,alpha=0.6,label=f"Random classifier ({churn_prop:.2f})")
     
     for x,y, threshold in zip(points_recall,points_precision, points_thresholds):
-        plt.annotate(f'{threshold:.2f}',(x,y),xytext=(5,5),textcoords='offset points',color='#6B7280')
-    ax.set_xlabel('Recall',fontsize=10,color="#6B7280")
-    ax.set_ylabel('Precision',fontsize=10,color="#6B7280")
-    ax.set_title('PR Curve', fontsize=10, fontweight='bold', color='#6B7280', pad=10)
-    ax.tick_params(axis='both', labelsize=9, colors='#6B7280')
+        plt.annotate(f'{threshold:.2f}',(x,y),xytext=(5,5),fontsize=4,textcoords='offset points',color='#6B7280')
+    #ax.set_xlabel('Recall',fontsize=10,color="#6B7280")
+    #ax.set_ylabel('Precision',fontsize=10,color="#6B7280")
+    ax.set_title('PR Curve', fontsize=5, fontweight='bold', color='#6B7280', pad=10)
+    ax.tick_params(axis='both', labelsize=4, colors='#6B7280')
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_color("#BBBBBB")
-    ax.spines["bottom"].set_color("#BBBBBB")
+    ax.spines["left"].set_color("#6B7280")
+    ax.spines["bottom"].set_color("#6B7280")
     ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
     ax.patch.set_alpha(0)
-    legend = ax.legend(fontsize=8,frameon=False,loc="upper right")
+    legend = ax.legend(fontsize=5,frameon=False,loc="upper right")
     plt.setp(legend.get_texts(), color="#6B7280")
     fig.patch.set_alpha(0)
     plt.tight_layout()
@@ -69,22 +69,22 @@ def plot_roc(fpr, tpr, thresholds, roc_auc):
     points_tpr = tpr[indices]
     points_thresholds = thresholds[indices]
     
-    fig, ax = plt.subplots(figsize=(8,4.6))
-    ax.plot(fpr,tpr,linewidth=2,label=f"ROC curve (AUC = {roc_auc:.2f})", color='#B23A48')
-    ax.plot([0, 1],[0, 1],linestyle="--",linewidth=1.2,alpha=0.6,label="Random classifier")
+    fig, ax = plt.subplots(figsize=(3,2))
+    ax.plot(fpr,tpr,linewidth=1,label=f"ROC curve (AUC = {roc_auc:.2f})", color='#B23A48')
+    ax.plot([0, 1],[0, 1],linestyle="--",linewidth=1,alpha=0.6,label="Random classifier")
     for x,y, threshold in zip(points_fpr, points_tpr, points_thresholds):
-        plt.annotate(f'{threshold:.2f}',(x,y),xytext=(5,5),textcoords='offset points',color='#6B7280')
-    ax.set_xlabel('False positive rate',fontsize=10,color="#6B7280")
-    ax.set_ylabel('True positive rate',fontsize=10,color="#6B7280")
-    ax.set_title('ROC Curve', fontsize=10, fontweight='bold', color='#6B7280', pad=10)
-    ax.tick_params(axis='both', labelsize=9, colors='#6B7280')
+        plt.annotate(f'{threshold:.2f}',(x,y),xytext=(5,5),fontsize=4,textcoords='offset points',color='#6B7280')
+    #ax.set_xlabel('False positive rate',fontsize=5,color="#6B7280")
+    #ax.set_ylabel('True positive rate',fontsize=5,color="#6B7280")
+    ax.set_title('ROC Curve', fontsize=5, fontweight='bold', color='#6B7280', pad=10)
+    ax.tick_params(axis='both', labelsize=4, colors='#6B7280')
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_color("#BBBBBB")
-    ax.spines["bottom"].set_color("#BBBBBB")
+    ax.spines["left"].set_color("#6B7280")
+    ax.spines["bottom"].set_color("#6B7280")
     ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
     ax.patch.set_alpha(0)
-    legend = ax.legend(fontsize=8,frameon=False,loc="lower right")
+    legend = ax.legend(fontsize=5,frameon=False,loc="lower right")
     plt.setp(legend.get_texts(), color="#6B7280")
     fig.patch.set_alpha(0)
     plt.tight_layout()
@@ -225,7 +225,7 @@ with mid_col2:
                 
                 
                 </div>
-                <div style="height:50px;width:100%;"></div>
+                <div style="height:27px;width:100%;"></div>
                 
                 """, unsafe_allow_html=True)
 
@@ -234,7 +234,7 @@ roc = pd.read_csv(f'./evaluation/{model}_roc.csv')
 with mid_col1: 
     with st.container(border=True):
         fig = plot_roc(roc['fp rate'], roc['tp rate'], roc['threshold'], model_metrics['roc_auc'])
-        st.pyplot(fig)
+        st.pyplot(fig, width='content')
         
         
 pr_auc = pd.read_csv(f'./evaluation/{model}_precision_recall_curv.csv')
