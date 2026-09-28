@@ -105,6 +105,9 @@ st.markdown(f"""
             <span style="font-weight:800;text-transform:uppercase;"> Select Model</span> <span style="padding-left:8px;color:gray;font-size:14px;"> / Optimised Based on F1-Score</span>
             """, unsafe_allow_html=True)
 model = st.selectbox('Select Model', options=models, label_visibility='collapsed')
+st.session_state['selected_model_name'] = model
+st.session_state['selected_model'] = st.session_state['current_model'][model][model]
+print('performance page selected model: ', st.session_state['selected_model'])
 with open(f'./metrics/{model}_evaluation_metrics.json', 'r') as f: 
   model_metrics = json.load(f)
 cols = st.columns(len(model_metrics) - 2, width='stretch')
@@ -296,7 +299,6 @@ with st.expander('Model Configuration'):
               """, unsafe_allow_html=True)
 with st.expander('Best hyperparameters'):
     best_params = model_metadata['best_params']
-    print(best_params)
     for key, value in best_params.items():
         st.markdown(f"""
                 <div>

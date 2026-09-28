@@ -6,14 +6,7 @@ st.set_page_config(
     initial_sidebar_state='locked',
     layout='wide'
 )
-if 'current_model' not in st.session_state:
-    st.session_state['current_model'] = {
-        'Decision Tree':joblib.load('./models/Decision Tree_pipeline.joblib'), 
-        'Gradient Boosting': joblib.load('./models/Gradient Boosting_pipeline.joblib'),
-        'Logistic Regression': joblib.load('./models/Logistic Regression_pipeline.joblib'),
-        'Random Forest': joblib.load('./models/Random Forest_pipeline.joblib'), 
-        'XGBoost': joblib.load('./models/XGBoost_pipeline.joblib')
-        }  
+
 @st.cache_data
 def get_data(path): 
   return pd.read_excel(path)
