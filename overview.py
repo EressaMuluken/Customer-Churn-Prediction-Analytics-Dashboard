@@ -6,8 +6,6 @@ st.set_page_config(
     initial_sidebar_state='locked',
     layout='wide'
 )
-for key in st.session_state: 
-  st.session_state[key] = st.session_state[key] 
 if 'current_model' not in st.session_state:
     st.session_state['current_model'] = {
         'Decision Tree':joblib.load('./models/Decision Tree_pipeline.joblib'), 
@@ -15,26 +13,19 @@ if 'current_model' not in st.session_state:
         'Logistic Regression': joblib.load('./models/Logistic Regression_pipeline.joblib'),
         'Random Forest': joblib.load('./models/Random Forest_pipeline.joblib'), 
         'XGBoost': joblib.load('./models/XGBoost_pipeline.joblib')
-        }
-if 'data' not in st.session_state:
-    st.session_state['data'] = None
-    
+        }  
 @st.cache_data
 def get_data(path): 
   return pd.read_excel(path)
 @st.cache_resource
 def get_bestModel(path): 
   return joblib.load()
-df = get_data('./data/cleaned_Telco_consumer_churn.xlsx')
-print('df shape: ', df.shape)
-st.session_state['data'] = df 
-print('featues :', features)
+#df = get_data('./data/cleaned_Telco_consumer_churn.xlsx')
+df = st.session_state['data'] 
 X = df[features]
       
 for name, model in st.session_state['current_model'].items(): 
   df[f'{name}_predicted_Churn_probability'] = model[name].predict_proba(X)[:,1]
-
-print(df.head())
 churn_db = [
   {
     'title': 'Churn Rate', 

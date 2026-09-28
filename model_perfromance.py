@@ -14,7 +14,7 @@ def plot_f1_threshold(thresholds, f1,f1_score):
     fig, ax = plt.subplots(figsize=(3,2))
     ax.plot(thresholds,f1,linewidth=1,label=f"F1 (score = {f1_score:.2f})", color='#B23A48')
     ax.axvline(thresholds.loc[opt_index],linestyle="--",linewidth=1,alpha=0.6,label=f"Threshold (optimal = {thresholds.loc[opt_index]:.3f})")
-    ax.scatter(thresholds.loc[opt_index],opt_f1,zorder=5)
+    ax.plot(thresholds.loc[opt_index],opt_f1,marker='o',markersize=2)
     for x,y in zip(points_thresholds,points_f1):
         plt.annotate(f'{y:.2f}',(x,y),xytext=(5,5),fontsize=4,textcoords='offset points',color='#6B7280')
     #ax.set_xlabel('Threshold',fontsize=10,color="#6B7280")
@@ -25,6 +25,8 @@ def plot_f1_threshold(thresholds, f1,f1_score):
     ax.spines["right"].set_visible(False)
     ax.spines["left"].set_color("#6B7280")
     ax.spines["bottom"].set_color("#6B7280")
+    ax.spines['left'].set_alpha(0.2)
+    ax.spines['bottom'].set_alpha(0.2)
     ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
     ax.patch.set_alpha(0)
     legend = ax.legend(fontsize=5,frameon=False,loc="lower left")
@@ -32,7 +34,6 @@ def plot_f1_threshold(thresholds, f1,f1_score):
     fig.patch.set_alpha(0)
     plt.tight_layout()
     return fig  
-    
 def plot_pr_auc(recall, percision, thresholds, pr_auc, churn_prop): 
     n_points = 10
     indices = np.linspace(0,len(thresholds) - 1,n_points,dtype=int)
@@ -54,6 +55,8 @@ def plot_pr_auc(recall, percision, thresholds, pr_auc, churn_prop):
     ax.spines["right"].set_visible(False)
     ax.spines["left"].set_color("#6B7280")
     ax.spines["bottom"].set_color("#6B7280")
+    ax.spines['left'].set_alpha(0.2)
+    ax.spines['bottom'].set_alpha(0.2)
     ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
     ax.patch.set_alpha(0)
     legend = ax.legend(fontsize=5,frameon=False,loc="upper right")
@@ -61,7 +64,6 @@ def plot_pr_auc(recall, percision, thresholds, pr_auc, churn_prop):
     fig.patch.set_alpha(0)
     plt.tight_layout()
     return fig  
-    
 def plot_roc(fpr, tpr, thresholds, roc_auc):
     n_points = 10
     indices = np.linspace(0,len(thresholds) - 1,n_points,dtype=int)
@@ -82,6 +84,8 @@ def plot_roc(fpr, tpr, thresholds, roc_auc):
     ax.spines["right"].set_visible(False)
     ax.spines["left"].set_color("#6B7280")
     ax.spines["bottom"].set_color("#6B7280")
+    ax.spines['left'].set_alpha(0.2)
+    ax.spines['bottom'].set_alpha(0.2)
     ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
     ax.patch.set_alpha(0)
     legend = ax.legend(fontsize=5,frameon=False,loc="lower right")
