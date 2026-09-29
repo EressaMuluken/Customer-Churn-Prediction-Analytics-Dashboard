@@ -49,7 +49,11 @@ def calculate_shap(customer_df, X_train):
   else: 
      model_explainer = explainer[st.session_state['selected_model_name']](model)
      customer_shap_values = model_explainer.shap_values(customer_transformed_data)
-  churne_values = customer_shap_values[:,:,1]
+     print('Customer shap shape: ', customer_shap_values.shape)
+  if customer_shap_values.ndim == 3: 
+    churne_values = customer_shap_values[0,:,1]
+  else: 
+    churne_values = customer_shap_values[0] 
   customer_shap_df = pd.DataFrame({
     'names': np.array(feature_names).flatten(),
     'values': np.array(churne_values).flatten(),
@@ -58,7 +62,9 @@ def calculate_shap(customer_df, X_train):
   return customer_shap_df
 
 customer_list = df['CustomerID']
+
 current_customer = st.selectbox('Customer', options=customer_list)
+
 customer_score = df.loc[df['CustomerID'] == current_customer,'Churn Score'].iloc[0]
 customer_account = {
   'Contract': df.loc[df['CustomerID'] == current_customer,'Contract'].iloc[0], 
@@ -101,19 +107,19 @@ with st.container(border=True):
               align-items: center; 
               margin-bottom: 0px;
               "> 
-              <p style="margin-bottom:0px;font-weight:800; font-size:20px;">{current_customer}</p>
+              <p style="margin-bottom:0px;font-weight:700;font-size:20px;opacity:0.8;">{current_customer}</p>
               <p style="              
               background-color: rgb(0,0,128);
               margin-bottom:0px;
               color:white;
-              padding: 0px 8px;
+              padding: 1px 10px;
               border-radius: 16px;
-              background-color:{ "rgba(255, 0, 0, 1)" if Churn_value > 2 else "rgba(0, 255, 0, 1)"};
+              background-color:{ "rgba(128, 0, 0, 0.5)" if Churn_value > 2 else "rgba(0, 128, 0, 0.5)"};
               "><b>Prediction - {'Churned' if Churn_value > 2 else 'Retained'}</b>
               </p>
               
               </div>
-              <div style="display:flex;justify-content:space-between;gap:10px;margin-top:0px;font-size:14px;color:gray;">
+              <div style="display:flex;justify-content:space-between;gap:10px;margin-top:0px;font-size:14px;color:#6B7280;">
               <div>
               <span>{df.loc[df['CustomerID'] == current_customer,'City'].iloc[0]},</span>
               <span>{df.loc[df['CustomerID'] == current_customer,'State'].iloc[0]}</span>
@@ -125,19 +131,19 @@ with st.container(border=True):
               <p style="padding:0px;margin:0px;">{Churn_value} / 5 models predict churn</p>
               </div>
               </div>
-              <div style="display:flex;gap:10px;margin-bottom:20px;margin-top:0px;font-size:14px;color:gray;">
+              <div style="display:flex;gap:10px;margin-bottom:20px;margin-top:0px;font-size:14px;">
               <span style="padding:0px 8px;
               border-radius:16px;
-              background-color:rgba(128,128,128,0.5);">{df.loc[df['CustomerID'] == current_customer,'Gender'].iloc[0].capitalize()}</span>
+              background-color:rgba(0,128,128,0.5);">{df.loc[df['CustomerID'] == current_customer,'Gender'].iloc[0].capitalize()}</span>
               <span style="padding:0px 8px;
               border-radius:16px;
-              background-color:rgba(128,128,128,0.5);">Senior Citizen: {df.loc[df['CustomerID'] == current_customer,'Senior Citizen'].iloc[0]}</span>
+              background-color:rgba(0,128,128,0.5);">Senior Citizen: {df.loc[df['CustomerID'] == current_customer,'Senior Citizen'].iloc[0]}</span>
               <span style="padding:0px 8px;
               border-radius:16px;
-              background-color:rgba(128,128,128,0.5);"> Partner: {df.loc[df['CustomerID'] == current_customer,'Partner'].iloc[0]}</span>
+              background-color:rgba(0,128,128,0.5);"> Partner: {df.loc[df['CustomerID'] == current_customer,'Partner'].iloc[0]}</span>
               <span style="padding:0px 8px;
               border-radius:16px;
-              background-color:rgba(128,128,128,0.5);">Dependents: {df.loc[df['CustomerID'] == current_customer,'Dependents'].iloc[0]},</span>
+              background-color:rgba(0,128,128,0.5);">Dependents: {df.loc[df['CustomerID'] == current_customer,'Dependents'].iloc[0]}</span>
               </div>
               """, unsafe_allow_html=True)
   score = int(df.loc[df['CustomerID'] == current_customer,'Churn Score'].iloc[0])
@@ -153,7 +159,7 @@ with st.container(border=True):
     with st.container(border=True): 
         st.markdown(f"""
                 <div>
-                <span style="margin-bottom:0px;font-weight:800;">Churn Score</span>
+                <span style="margin-bottom:0px;font-weight:700;opacity:0.8;">Churn Score</span>
                 <hr style="margin-top:4px; margin-bottom:11px;"/>
                 </div>
                 """, unsafe_allow_html=True)
@@ -172,7 +178,7 @@ with st.container(border=True):
     with st.container(border=True): 
       st.markdown(f"""
                 <div>
-                <span style="margin-bottom:0px;font-weight:800;">Account</span>
+                <span style="margin-bottom:0px;font-weight:700;opacity:0.8;">Account</span>
                 <hr style="margin-top:4px; margin-bottom:11px;"/>
                 </div>
                 """, unsafe_allow_html=True)
@@ -191,7 +197,7 @@ with st.container(border=True):
     with st.container(border=True, height=424): 
       st.markdown(f"""
               <div>
-              <span style="margin-bottom:0px;font-weight:800;">Services</span>
+              <span style="margin-bottom:0px;font-weight:700;opacity:0.8;">Services</span>
               <hr style="margin-top:4px; margin-bottom:11px;"/>
               </div>
               """, unsafe_allow_html=True)
@@ -199,7 +205,7 @@ with st.container(border=True):
         st.markdown(f"""
                     <div style="display:flex;justify-content:space-between;
                     align-items:center;padding:0px 8px;border-radius:10px;opacity:0.9;
-                    border-radius:4px;background-color:rgba(122,128,112,0.5);
+                    border-radius:4px;background-color:#263445;
                     padding:2px 8px;
                     margin-left: 8px;
                     margin-bottom:4px;
@@ -216,11 +222,27 @@ with st.container(border=True):
     with b_col_1: 
       st.markdown(f"""
                 <div>
-                <span style="margin-bottom:0px;font-weight:800;">Model Predictions</span>
+                <span style="margin-bottom:0px;font-weight:700;opacity:0.8;">Model Predictions</span>
                 <hr style="margin-top:4px; margin-bottom:11px;"/>
                 </div>
                 """, unsafe_allow_html=True)
-      st.dataframe(customer_prediction_table, hide_index=True)
+      st.dataframe(customer_prediction_table,
+                   column_config={
+        "Model": st.column_config.TextColumn(
+            "Model",
+            width="medium"
+        ),
+        "Prediction": st.column_config.TextColumn(
+            "Prediction",
+            width="medium"
+        ),
+        "Probabilities": st.column_config.ProgressColumn(
+            "Probabilities",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100,
+        ),
+    }, hide_index=True)
     with b_col_2: 
       top_shap_df = customer_shap_values.sort_values(by='values', ascending=False).head(5)
       top_shap_df['names'] = top_shap_df['names'].str.replace('numeric__','').str.replace('categorical__','')
@@ -228,11 +250,22 @@ with st.container(border=True):
       top_shap_df.rename(columns={'names':'Feature Names', 'values':'Contribution (in %)'}, inplace=True)
       st.markdown(f"""
                 <div>
-                <span style="margin-bottom:0px;font-weight:800;">Local SHAP / Top Risk Factors</span>
+                <span style="margin-bottom:0px;font-weight:700;opacity:0.8">Local SHAP / Top Risk Factors</span>
                 <hr style="margin-top:4px; margin-bottom:11px;"/>
                 </div>
                 """, unsafe_allow_html=True)
-      st.dataframe(top_shap_df, hide_index=True)
+      st.dataframe(top_shap_df,
+                   column_config={
+        "Feature Names": st.column_config.TextColumn(
+            "Feature Names",
+            width="medium"
+        ),
+        "Contribution (in %)": st.column_config.ProgressColumn(
+            "Contribution (in %)",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100,
+        )},hide_index=True)
   if Churn_value > 2: 
     with st.container(border=True):
         st.markdown(f"""
@@ -243,6 +276,6 @@ with st.container(border=True):
               """, unsafe_allow_html=True)
         st.markdown(f"""
               <div style="margin-bottom:8px;">
-              <p style="padding:0px 8px;margin-bottom:0px;font-weight:600;color:rgb(128,0,0)">{customer_churn_reason}</p>
+              <p style="padding:0px 8px;margin-bottom:0px;font-weight:600;color:rgb(255,0,0)">{customer_churn_reason}</p>
               </div>
               """, unsafe_allow_html=True)

@@ -102,12 +102,11 @@ models = [
         'XGBoost'        
         ]
 st.markdown(f""" 
-            <span style="font-weight:800;text-transform:uppercase;"> Select Model</span> <span style="padding-left:8px;color:gray;font-size:14px;"> / Optimised Based on F1-Score</span>
+            <span style="font-weight:700;text-transform:uppercase;opacity:0.8;"> Select Model</span> <span style="padding-left:8px;color:gray;font-size:14px;"> / Optimised Based on F1-Score</span>
             """, unsafe_allow_html=True)
 model = st.selectbox('Select Model', options=models, label_visibility='collapsed')
 st.session_state['selected_model_name'] = model
 st.session_state['selected_model'] = st.session_state['current_model'][model][model]
-print('performance page selected model: ', st.session_state['selected_model'])
 with open(f'./metrics/{model}_evaluation_metrics.json', 'r') as f: 
   model_metrics = json.load(f)
 cols = st.columns(len(model_metrics) - 2, width='stretch')
@@ -117,7 +116,8 @@ for col, (key, value) in zip(cols, islice(model_metrics.items(), 2, None)):
     f"""
     <div style="
         padding:16px;
-        border-radius:10px;        border:1px solid #444;
+        border-radius:10px;        
+        border:1px solid #444;
         text-align:left;
         width:100%;
         margin-bottom:24px;
@@ -127,6 +127,7 @@ for col, (key, value) in zip(cols, islice(model_metrics.items(), 2, None)):
             text-transform:uppercase;
             opacity:0.7;
             width:100%;
+            opacity:0.8;
         ">
             {key}
         </div>
@@ -137,7 +138,7 @@ for col, (key, value) in zip(cols, islice(model_metrics.items(), 2, None)):
             color:{'green' if key == 'roc_auc' else 'inherit'};
             width: 100%;
         ">
-            {value:.2f}
+            {value:.2%}
         </div>
          <div style="
             font-size:14px;
@@ -158,7 +159,7 @@ with mid_col2:
     with st.container(border=True, width='stretch'): 
         st.markdown(f"""
             <div>
-            <span style="margin-bottom:0px;font-weight:800;">Confusion matrix</span>
+            <span style="margin-bottom:0px;font-weight:700;opacity:0.8">Confusion matrix</span>
             <span style="margin-left:8px;color:gray; font-size:14px;"> threshold &ge; 0.5</span>
             <hr style="margin-top:4px;"/>
             </div>
@@ -262,16 +263,66 @@ for item in models:
         result = {k:v for k, v in metrics.items() if k not in ['cm']}
         compare_array.append(result)
 compare_model_df = pd.DataFrame(compare_array)
+cols_metrics = [
+    "accuracy",
+    "precision",
+    "recall",
+    "f1",
+    "roc_auc",
+    "pr_auc"
+]
+compare_model_df[cols_metrics]= compare_model_df[cols_metrics] * 100
 compare_model_df.columns = compare_model_df.columns.str.upper()
 with st.container(border=True): 
     st.markdown(f"""
               <div>
-              <span style="margin-bottom:0px;">Model Comparsion</span>
+              <span style="margin-bottom:0px;font-weight:700;opacity:0.8;">Model Comparsion</span>
               <span style="margin-left:8px;color:gray; font-size:14px;">/ Optimised based on F1-score</span>
               <hr style="margin-top:0px;"/>
               </div>
               """, unsafe_allow_html=True)
-    st.dataframe(compare_model_df, hide_index=True)
+    st.dataframe(compare_model_df, column_config={
+         "MODEL": st.column_config.TextColumn(
+            "MODEL",
+            width='medium'
+        ),
+        "ACCURACY": st.column_config.ProgressColumn(
+            "ACCURACY",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "PRECISION": st.column_config.ProgressColumn(
+            "PRECISION",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "RECALL": st.column_config.ProgressColumn(
+            "RECALL",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "F1": st.column_config.ProgressColumn(
+            "F1",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "ROC_AUC": st.column_config.ProgressColumn(
+            "ROC_AUC",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "PR_AUC": st.column_config.ProgressColumn(
+            "PR_AUC",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+    },hide_index=True)
 
 with open(f'./metadata/{model}_metadata.json', 'r') as f: 
     model_metadata = json.load(f)

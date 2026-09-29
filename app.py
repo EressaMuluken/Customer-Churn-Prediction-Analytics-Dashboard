@@ -24,8 +24,34 @@ if 'selected_model_name' not in st.session_state:
   st.session_state['selected_model_name'] = next(iter(st.session_state['current_model']))
 if 'selected_model' not in st.session_state: 
   st.session_state['selected_model'] = st.session_state['current_model'][st.session_state['selected_model_name']][st.session_state['selected_model_name']]
-#print('Selected model name: ', st.session_state['selected_model_name'])
-#print('selected model in startup: ', st.session_state['selected_model'])
+st.markdown("""
+<style>
+   .stApp {
+        background-color: light-dark(#f3f4f6, #1f2937);
+    }
+    .block-container {
+        padding-top: 3rem;
+        padding-bottom: 2rem;
+    }
+       [data-testid="stDataFrame"] {
+        background-color: light-dark(#f3f4f6, #1f2937);
+    }
+
+      [data-testid="stDataFrame"] table {
+        background-color: light-dark(#f3f4f6, #1f2937) !important;
+    }
+
+    [data-testid="stDataFrame"] th {
+        background-color: light-dark(#e5e7eb, #374151) !important;
+    }
+
+    [data-testid="stDataFrame"] td {
+        background-color: light-dark(#f3f4f6, #1f2937) !important;
+    }
+
+</style>
+""", unsafe_allow_html=True)
+
 pg = st.navigation([
   st.Page('overview.py', title='Overview'),
   st.Page('model_perfromance.py', title='Model Performance'),
