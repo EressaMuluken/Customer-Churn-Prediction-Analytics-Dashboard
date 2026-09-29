@@ -52,6 +52,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+with st.sidebar:
+  st.logo('./images/churnpredict.jpeg', size='large')
+  
 pg = st.navigation([
   st.Page('overview.py', title='Overview'),
   st.Page('model_perfromance.py', title='Model Performance'),

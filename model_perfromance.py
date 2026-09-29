@@ -105,6 +105,74 @@ st.markdown(f"""
             <span style="font-weight:700;text-transform:uppercase;opacity:0.8;"> Select Model</span> <span style="padding-left:8px;color:gray;font-size:14px;"> / Optimised Based on F1-Score</span>
             """, unsafe_allow_html=True)
 model = st.selectbox('Select Model', options=models, label_visibility='collapsed')
+with open(f'./metadata/{model}_metadata.json', 'r') as f: 
+    model_metadata = json.load(f)
+    
+st.markdown(f"""
+             <div style="display:flex;justify-content:space-between;gap:10px;padding-top:0;margin-top:0px;margin-bottom:10px;font-size:14px;font-weight:700;opacity:0.8;">
+             <div style="display:flex;gap:10px;justify-content:start;width:75%;">
+              <p style="
+              margin-top:0px;
+              margin-bottom:10px;
+              padding:2px 8px;
+              border-radius:16px;
+              font-weight:600;
+              opacity:0.9;
+              background-color:#17202B;">Algorithm :-
+              <span style="margin-left:8px;font-size:14px;font-weight:600;
+              "> {model_metadata['model_name']}</span></p>
+              <p style="
+              margin-top:0px;
+              margin-bottom:10px;
+              padding:2px 8px;
+              border-radius:16px;
+              font-weight:600;
+              opacity:0.9;
+               background-color:#17202B;">Training data :- 
+              <span style="margin-left:8px;font-size:14px;"> {model_metadata['training_date'].split(' ')[0]}</span></p>
+              <p style="
+              margin-top:0px;
+              margin-bottom:10px;
+              padding:2px 8px;
+              border-radius:16px;
+              font-weight:600;
+              opacity:0.9;
+               background-color:#17202B;">Numerical Features :-
+              <span style="margin-left:8px;font-size:14px;"> {len(model_metadata['numeric_features'])}</span></p>
+              <p style="
+              margin-top:0px;
+              margin-bottom:10px;
+              padding:2px 8px;
+              border-radius:16px;
+              font-weight:600;
+              opacity:0.9;
+               background-color:#17202B;">Categorical Features :- 
+              <span style="margin-left:8px;font-size:14px;"> {len(model_metadata['categorical_features'])}</span></p>
+              </div>
+              <div style="display:flex;gap:10px;justify-content:end;width:25%;">
+              <p style="
+              margin-top:0px;
+              margin-bottom:10px;
+              padding:2px 8px;
+              border-radius:16px;
+              font-weight:600;
+              opacity:0.9;
+               background-color:#17202B;">Threshold :- 
+              <span style="margin-left:8px;font-size:14px;"> {model_metadata['threshold']}</span></p>
+              <p style="
+              margin-top:0px;
+              margin-bottom:10px;
+              padding:2px 8px;
+              border-radius:16px;
+              font-weight:600;
+              opacity:0.9;
+               background-color:#17202B;">Target :-
+              <span style="margin-left:8px;font-size:14px;"> {model_metadata['target']}</span></p>
+              </div>
+              
+              <div> 
+            
+            """, unsafe_allow_html=True)
 st.session_state['selected_model_name'] = model
 st.session_state['selected_model'] = st.session_state['current_model'][model][model]
 with open(f'./metrics/{model}_evaluation_metrics.json', 'r') as f: 
@@ -324,8 +392,7 @@ with st.container(border=True):
         ),
     },hide_index=True)
 
-with open(f'./metadata/{model}_metadata.json', 'r') as f: 
-    model_metadata = json.load(f)
+
 with st.expander('Model Configuration'):
     st.markdown(f"""
               <div>
