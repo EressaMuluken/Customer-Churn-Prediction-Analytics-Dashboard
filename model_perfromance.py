@@ -4,6 +4,47 @@ from itertools import islice
 import pandas as pd 
 import matplotlib.pyplot as plt 
 import numpy as np 
+from lib.metrics import computePSI
+from lib.constant import features, target
+from sklearn.model_selection import train_test_split
+def plot_psi(psi_data:pd.DataFrame): 
+    psi_data_filtered = psi_data.sort_values(by='PSI', ascending=False)
+    psi_data_filtered = psi_data_filtered[psi_data_filtered['PSI'] > 0]
+    fig, ax = plt.subplots(figsize=(4,3))
+    ax.barh(psi_data_filtered['Feature'], psi_data_filtered['PSI'])
+    ax.invert_yaxis()
+    ax.set_title('Local PSI', fontsize=5, fontweight='bold', color='#6B7280', pad=10)
+    ax.tick_params(axis='both', labelsize=4, colors='#6B7280')
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_color("#6B7280")
+    ax.spines["bottom"].set_color("#6B7280")
+    ax.spines['left'].set_alpha(0.2)
+    ax.spines['bottom'].set_alpha(0.2)
+    ax.grid(True,linestyle="--",linewidth=0.5,alpha=0.25)
+    ax.patch.set_alpha(0)
+    legend = ax.legend(fontsize=5,frameon=False,loc="lower left")
+    plt.setp(legend.get_texts(), color="#6B7280")
+    fig.patch.set_alpha(0)
+    plt.tight_layout()
+    
+    return fig
+def psi_status(psi):
+    if psi < 0.10:
+        return "Stable"
+    elif psi < 0.25:
+        return "Moderate"
+    else:
+        return "Needs Investigation"
+    
+def get_PSI(X_train, X_test, y_train, y_test): 
+    psi_data = {}
+    for col in list(X_train.columns): 
+        psi_data[col] = computePSI(X_train[col], X_test[col],bins=10)
+    psi_target = computePSI(y_train, y_test, bins=10)
+    
+    psi_data = pd.Series(psi_data).sort_values(ascending=False)
+    return psi_data, psi_target
 def plot_f1_threshold(thresholds, f1,f1_score): 
     n_points = 10
     indices = np.linspace(0,len(thresholds) - 1,n_points,dtype=int)
@@ -71,7 +112,7 @@ def plot_roc(fpr, tpr, thresholds, roc_auc):
     points_tpr = tpr[indices]
     points_thresholds = thresholds[indices]
     
-    fig, ax = plt.subplots(figsize=(3,2))
+    fig, ax = plt.subplots(figsize=(3.5,2))
     ax.plot(fpr,tpr,linewidth=1,label=f"ROC curve (AUC = {roc_auc:.2f})", color='#B23A48')
     ax.plot([0, 1],[0, 1],linestyle="--",linewidth=1,alpha=0.6,label="Random classifier")
     for x,y, threshold in zip(points_fpr, points_tpr, points_thresholds):
@@ -193,7 +234,6 @@ for col, (key, value) in zip(cols, islice(model_metrics.items(), 2, None)):
         <div style="
             font-weight:700;
             text-transform:uppercase;
-            opacity:0.7;
             width:100%;
             opacity:0.8;
         ">
@@ -324,6 +364,128 @@ with thr_col:
     with st.container(border=True): 
         fig = plot_f1_threshold(pr_auc['threshold'], pr_auc['f1'],model_metrics['f1'])
         st.pyplot(fig)
+        
+df = st.session_state['data']
+
+X = df[features]
+y = df[target]
+X_train, X_test, y_train,y_test = train_test_split(X, y, stratify=y, train_size=0.3)
+psi_data, psi_target = get_PSI(X_train, X_test, y_train, y_test)
+psi_df = psi_data.reset_index()
+psi_df.columns = ['Feature', 'PSI']
+psi_df["Status"] = psi_df["PSI"].apply(psi_status)
+
+with st.container(border=True):
+    st.markdown(f"""
+              <div>
+              <p style="display:flex;
+              justify-content:space-between;
+              margin-bottom:0px;
+              padding-bottom:0px;
+              ">
+              <span style="font-weight:700;opacity:0.8;">Model Monitoring</span>
+              <span style="font-weight:700;opacity:0.8;color:{'rgba(0,255,0,0.8)' if psi_data.mean() < 0.1 else 'rgba(255,128,0,0.5)'};
+">Global PSI: {psi_data.mean():.3f}</span>
+              </p>
+              <hr style="margin-top:0px;"/>
+              </div>
+              """, unsafe_allow_html=True)
+    shift_col, feature_col = st.columns(2)
+    with shift_col: 
+        st.markdown(f"""
+                    <div style="display:flex;gap:20px;justify-content:start;">
+                    <div style="
+                    padding:16px;
+                    border-radius:10px;        
+                    border:1px solid #444;
+                    text-align:left;
+                    width:200px;
+                    margin-bottom:24px;
+                    ">
+                    <div style="
+                        font-weight:700;
+                        text-transform:uppercase;
+                        width:100%;
+                        opacity:0.8;
+                    ">
+                     Global PSI
+                    </div>
+                    <div style="
+                        font-size:24px;
+                        font-weight:700;
+                        margin-top:2px;
+                        color:{'rgba(0,255,0,0.8)' if psi_data.mean() < 0.1 else 'rgba(255,128,0,0.5)'};
+                        width: 100%;
+                    ">
+                        {psi_data.mean():.4f}
+                    </div>
+                    <div style="
+                        font-size:14px;
+                        margin-top:2px;
+                        color:{'rgba(0,255,0,0.5)' if psi_data.mean() < 0.1 else 'rgba(255,128,0,0.5)'};
+                        width:100%;
+                        font-weight:600;
+                    ">
+                    {'stable' if psi_data.mean() < 0.1 else 'need investigation'}
+                    </div>
+                    </div>
+                        <div style="
+                        padding:16px;
+                        border-radius:10px;        
+                        border:1px solid #444;
+                        text-align:left;
+                        width:200px;
+                        margin-bottom:24px;
+                    ">
+                    <div style="
+                        font-weight:700;
+                        text-transform:uppercase;
+                        opacity:0.8;
+                        width:100%;
+                    ">
+                    Target PSI
+                    </div>
+                    <div style="
+                        font-size:24px;
+                        font-weight:700;
+                        margin-top:2px;
+                        color:{'rgba(0,255,0,0.8)' if psi_target < 0.1 else 'rgba(255,128,0,0.8)'};
+                        width: 100%;
+                    ">
+                        {psi_target:.4f}
+                    </div>
+                    <div style="
+                        font-size:14px;
+                        margin-top:2px;
+                        color:{'rgba(0,255,0,0.5)' if psi_target < 0.1 else 'rgba(255,128,0,0.8)'};
+                        width:100%;
+                        font-weight:600;
+                    ">
+                    {'stable' if psi_target < 0.1 else 'need investigation'}
+                    </div>
+                    </div> 
+                    </div>""",unsafe_allow_html=True)
+        st.dataframe(psi_df, hide_index=True, column_config={
+            "Feature":st.column_config.TextColumn(
+                "Feature",
+                width='small'
+            ), 
+            "PSI": st.column_config.ProgressColumn(
+                "PSI",
+                format="%.5f",
+                min_value=0,
+                max_value=1,
+                width='medium'
+            ), 
+            "Status": st.column_config.TextColumn(
+                "Status", 
+                width='medium'
+            )
+        })
+    with feature_col:
+        fig = plot_psi(psi_df)
+        st.pyplot(fig)
+       
 compare_array = []
 for item in models: 
     with open(f'./metrics/{item}_evaluation_metrics.json', 'r') as f: 
