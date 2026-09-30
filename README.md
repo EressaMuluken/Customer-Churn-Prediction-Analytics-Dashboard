@@ -60,7 +60,4 @@ streamlit run streamlit/app.py
 └── README.md
 ```
 
-## Links
 
-- **GitHub:** <repository-url>
-- **Live Demo:** <streamlit-app-url>
