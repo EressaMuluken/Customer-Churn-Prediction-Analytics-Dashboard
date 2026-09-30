@@ -43,11 +43,19 @@ streamlit run streamlit/app.py
 ## Project Structure
 
 ```text
+├── .streamlit/
 ├── data/
-├── models/
+├── evaluation/
 ├── images/
-├── streamlit/
+├── lib/
+├── metadata/
+├── metrics/
+├── models/
 ├── notebooks/
+├── app.py
+├── customer.py
+├── model_perfromance.py
+├── overview.py
 ├── requirements.txt
 └── README.md
 ```
