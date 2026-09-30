@@ -37,7 +37,7 @@ An end-to-end **customer churn prediction and monitoring dashboard** built with 
 git clone https://github.com/EressaMuluken/Customer-Churn-Prediction-Analytics-Dashboard
 cd Customer-Churn-Prediction-Analytics-Dashboard
 pip install -r requirements.txt
-streamlit run streamlit/app.py
+streamlit run app.py
 ```
 
 ## Project Structure
