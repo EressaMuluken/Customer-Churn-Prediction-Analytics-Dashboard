@@ -363,8 +363,75 @@ with pr_col:
 with thr_col: 
     with st.container(border=True): 
         fig = plot_f1_threshold(pr_auc['threshold'], pr_auc['f1'],model_metrics['f1'])
-        st.pyplot(fig)
-        
+        st.pyplot(fig)       
+compare_array = []
+for item in models: 
+    with open(f'./metrics/{item}_evaluation_metrics.json', 'r') as f: 
+        metrics = json.load(f)
+        result = {k:v for k, v in metrics.items() if k not in ['cm']}
+        compare_array.append(result)
+compare_model_df = pd.DataFrame(compare_array)
+cols_metrics = [
+    "accuracy",
+    "precision",
+    "recall",
+    "f1",
+    "roc_auc",
+    "pr_auc"
+]
+compare_model_df[cols_metrics]= compare_model_df[cols_metrics] * 100
+compare_model_df.columns = compare_model_df.columns.str.upper()
+with st.container(border=True): 
+    st.markdown(f"""
+              <div>
+              <span style="margin-bottom:0px;font-weight:700;opacity:0.8;">Model Comparsion</span>
+              <span style="margin-left:8px;color:gray; font-size:14px;">/ Optimised based on F1-score</span>
+              <hr style="margin-top:0px;"/>
+              </div>
+              """, unsafe_allow_html=True)
+    st.dataframe(compare_model_df, column_config={
+         "MODEL": st.column_config.TextColumn(
+            "MODEL",
+            width='medium'
+        ),
+        "ACCURACY": st.column_config.ProgressColumn(
+            "ACCURACY",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "PRECISION": st.column_config.ProgressColumn(
+            "PRECISION",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "RECALL": st.column_config.ProgressColumn(
+            "RECALL",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "F1": st.column_config.ProgressColumn(
+            "F1",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "ROC_AUC": st.column_config.ProgressColumn(
+            "ROC_AUC",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+        "PR_AUC": st.column_config.ProgressColumn(
+            "PR_AUC",
+            format="%.1f%%",
+            min_value=0,
+            max_value=100
+        ),
+    },hide_index=True)
+   
 df = st.session_state['data']
 
 X = df[features]
@@ -385,7 +452,7 @@ with st.container(border=True):
               ">
               <span style="font-weight:700;opacity:0.8;">Model Monitoring</span>
               <span style="font-weight:700;opacity:0.8;color:{'rgba(0,255,0,0.8)' if psi_data.mean() < 0.1 else 'rgba(255,128,0,0.5)'};
-">Global PSI: {psi_data.mean():.3f}</span>
+              ">Global PSI: {psi_data.mean():.3f}</span>
               </p>
               <hr style="margin-top:0px;"/>
               </div>
@@ -485,75 +552,6 @@ with st.container(border=True):
     with feature_col:
         fig = plot_psi(psi_df)
         st.pyplot(fig)
-       
-compare_array = []
-for item in models: 
-    with open(f'./metrics/{item}_evaluation_metrics.json', 'r') as f: 
-        metrics = json.load(f)
-        result = {k:v for k, v in metrics.items() if k not in ['cm']}
-        compare_array.append(result)
-compare_model_df = pd.DataFrame(compare_array)
-cols_metrics = [
-    "accuracy",
-    "precision",
-    "recall",
-    "f1",
-    "roc_auc",
-    "pr_auc"
-]
-compare_model_df[cols_metrics]= compare_model_df[cols_metrics] * 100
-compare_model_df.columns = compare_model_df.columns.str.upper()
-with st.container(border=True): 
-    st.markdown(f"""
-              <div>
-              <span style="margin-bottom:0px;font-weight:700;opacity:0.8;">Model Comparsion</span>
-              <span style="margin-left:8px;color:gray; font-size:14px;">/ Optimised based on F1-score</span>
-              <hr style="margin-top:0px;"/>
-              </div>
-              """, unsafe_allow_html=True)
-    st.dataframe(compare_model_df, column_config={
-         "MODEL": st.column_config.TextColumn(
-            "MODEL",
-            width='medium'
-        ),
-        "ACCURACY": st.column_config.ProgressColumn(
-            "ACCURACY",
-            format="%.1f%%",
-            min_value=0,
-            max_value=100
-        ),
-        "PRECISION": st.column_config.ProgressColumn(
-            "PRECISION",
-            format="%.1f%%",
-            min_value=0,
-            max_value=100
-        ),
-        "RECALL": st.column_config.ProgressColumn(
-            "RECALL",
-            format="%.1f%%",
-            min_value=0,
-            max_value=100
-        ),
-        "F1": st.column_config.ProgressColumn(
-            "F1",
-            format="%.1f%%",
-            min_value=0,
-            max_value=100
-        ),
-        "ROC_AUC": st.column_config.ProgressColumn(
-            "ROC_AUC",
-            format="%.1f%%",
-            min_value=0,
-            max_value=100
-        ),
-        "PR_AUC": st.column_config.ProgressColumn(
-            "PR_AUC",
-            format="%.1f%%",
-            min_value=0,
-            max_value=100
-        ),
-    },hide_index=True)
-
 
 with st.expander('Model Configuration'):
     st.markdown(f"""
@@ -587,5 +585,3 @@ with st.expander('Best hyperparameters'):
                 </div>
                 
                 """, unsafe_allow_html=True)
-   
-    
